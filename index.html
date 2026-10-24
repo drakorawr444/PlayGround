@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#0b3b37" />
+<meta name="description" content="Bow Brawl is a turn-based throwing duel with six fighters, one signature weapon each, and a single tap to change the shot." />
+<title>Bow Brawl — Turn-Based Throwing Duel</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="stage" aria-label="Duel arena" data-i18n-aria="aria.arena"></canvas>
+  <div id="flash" class="flash" aria-hidden="true"></div>
+
+  <section id="menu" class="menu" aria-label="Main menu" data-i18n-aria="aria.menu">
+    <header class="menu-top">
+      <div class="brand">
+        <h1 class="logo"><span class="logo-bow">BOW</span><span class="logo-brawl">BRAWL</span></h1>
+        <p class="tagline" data-i18n="tagline">Turn-based throwing duel</p>
+      </div>
+      <div class="menu-chips">
+        <div class="chip" aria-label="Best run" data-i18n-aria="record">
+          <svg class="chip-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.8 5.8 6.4.9-4.6 4.5 1.1 6.4-5.7-3-5.7 3 1.1-6.4L2.8 9.3l6.4-.9z"/></svg>
+          <span class="chip-label" data-i18n="record">BEST RUN</span>
+          <b id="best-streak">0</b>
+        </div>
+        <button id="lang-btn" class="icon-btn lang-btn" type="button" aria-label="Mudar para português">EN</button>
+        <button id="menu-sound" class="icon-btn" type="button" aria-label="Turn sound on or off" data-i18n-aria="aria.sound">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="stroke" d="M16.5 8.2a5 5 0 010 7.6M19 5.5a8.5 8.5 0 010 13"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="stroke" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="menu-body">
+      <section class="roster-panel" aria-label="Fighter select" data-i18n-aria="aria.roster">
+        <div class="panel-head">
+          <span class="chev" aria-hidden="true">‹</span>
+          <span data-i18n="menu.heroes">FIGHTERS</span>
+          <span class="chev" aria-hidden="true">›</span>
+        </div>
+        <div id="hero-cards" class="hero-cards"></div>
+        <p class="roster-hint" data-i18n="menu.hint">Pick one. Each fighter carries a single weapon.</p>
+      </section>
+
+      <aside class="hero-showcase">
+        <div class="hero-banner">
+          <div class="hero-banner-ribbon"></div>
+          <h2 id="hero-name">ARNOLD</h2>
+          <p id="hero-title">Ranger</p>
+        </div>
+        <div class="weapon-badge">
+          <canvas id="menu-weapon" width="112" height="112" aria-hidden="true"></canvas>
+          <div>
+            <span class="weapon-label" data-i18n="menu.weapon">WEAPON</span>
+            <strong id="hero-weapon">Tomahawk</strong>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="menu-bottom">
+      <button id="how-btn" class="btn-ghost" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="stroke" cx="12" cy="12" r="9"/><path class="stroke" d="M9.4 9a2.7 2.7 0 015.2 1c0 1.8-2.6 2-2.6 4"/><circle cx="12" cy="17.2" r="1.1" class="fill"/></svg>
+        <span data-i18n="menu.how">HOW TO PLAY</span>
+      </button>
+
+      <div class="play-wrap">
+        <div class="mode-switch" id="mode-switch" role="group" aria-label="Game mode" data-i18n-aria="aria.mode">
+          <button id="mode-solo" class="mode-btn active" type="button" aria-pressed="true" data-i18n="menu.modeSolo">SOLO</button>
+          <button id="mode-split" class="mode-btn" type="button" aria-pressed="false" data-i18n="menu.modeSplit">SPLIT SCREEN</button>
+        </div>
+        <p class="mode-note" id="mode-note" data-i18n="menu.modeNoteSolo">You against the rival.</p>
+
+        <button id="play-btn" class="play-btn" type="button" aria-label="Play">
+          <span class="play-shine" aria-hidden="true"></span>
+          <span class="play-arrow" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M24 4l4 12 12-6-6 12 12 4-12 4 6 12-12-6-4 12-4-12-12 6 6-12-12-4 12-4-6-12 12 6z"/></svg>
+          </span>
+          <span class="play-text" data-i18n="menu.play">PLAY</span>
+          <span class="play-sub"><span id="play-stage-label" data-i18n="menu.stageWord">STAGE</span> <b id="level-num">1</b></span>
+        </button>
+        <span class="play-hint" data-i18n="menu.dragHint">Drag to aim. Release to throw.</span>
+      </div>
+
+      <button id="menu-help-btn" class="btn-ghost" type="button" aria-label="How to play">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="stroke" d="M5 4.5h9a5 5 0 015 5v10H10a5 5 0 01-5-5z"/><path class="stroke" d="M8.5 8.5h6M8.5 12h6M8.5 15.5h3.5"/></svg>
+        <span data-i18n="menu.tips">TIPS</span>
+      </button>
+    </footer>
+  </section>
+
+  <section id="hud" class="hud" aria-label="Match HUD" data-i18n-aria="aria.hud" hidden>
+    <button id="pause-btn" class="icon-btn hud-pause" aria-label="Pause" data-i18n-aria="aria.pause">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="2"/><rect x="13.5" y="5" width="4" height="14" rx="2"/></svg>
+    </button>
+
+    <div class="duel">
+      <div class="fighter left">
+        <div class="avatar-wrap"><canvas id="player-avatar" class="avatar" width="128" height="128" aria-hidden="true"></canvas><span class="turn-dot"></span></div>
+        <div class="fighter-info">
+          <div class="fighter-name" id="player-name">ARNOLD</div>
+          <div class="bar"><i id="player-hp-fill"></i><span id="player-hp-text">100</span></div>
+        </div>
+      </div>
+
+      <div class="vs-badge" aria-hidden="true">
+        <svg viewBox="0 0 48 48"><path d="M8 40L30 18l6-10 6 6-10 6L10 42z" fill="#ffd23f"/><path d="M40 40L18 18l-6-10-6 6 10 6 22 20z" fill="#fff3c4"/><circle cx="24" cy="24" r="4" fill="#6b3fbf"/></svg>
+      </div>
+
+      <div class="fighter right">
+        <div class="fighter-info">
+          <div class="fighter-name" id="enemy-name">ZUMBI</div>
+          <div class="bar"><i id="enemy-hp-fill"></i><span id="enemy-hp-text">100</span></div>
+        </div>
+        <div class="avatar-wrap"><canvas id="enemy-avatar" class="avatar" width="128" height="128" aria-hidden="true"></canvas><span class="turn-dot"></span></div>
+      </div>
+    </div>
+
+    <div id="split-line" class="split-line" aria-hidden="true" hidden></div>
+
+    <button id="sound-btn" class="icon-btn hud-sound" aria-label="Turn sound on or off" data-i18n-aria="aria.sound">
+      <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="stroke" d="M16.5 8.2a5 5 0 010 7.6M19 5.5a8.5 8.5 0 010 13"/></svg>
+      <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="stroke" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>
+    </button>
+
+    <div id="turn-toast" class="turn-toast" role="status">YOUR TURN</div>
+    <div id="wind-chip" class="wind-chip">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="stroke" d="M3 9h10a3 3 0 100-6M3 15h14a3 3 0 110 6M3 12h18"/></svg>
+      <span class="wind-label" data-i18n="hud.wind">WIND</span>
+      <b id="wind-value">0</b>
+      <span id="wind-arrow" class="wind-arrow">→</span>
+    </div>
+    <div id="timer-chip" class="timer-chip"><span class="timer-label" data-i18n="hud.time">TIME</span><b id="timer-value">20</b></div>
+    <div id="weapon-slot" class="weapon-slot" aria-label="Signature weapon" data-i18n-aria="aria.weapon"></div>
+    <div id="ability-hint" class="ability-hint" hidden>
+      <span data-i18n="ability.tap">TAP THE SCREEN</span>
+      <b id="ability-name">RETURN</b>
+    </div>
+  </section>
+
+  <div id="vignette" class="vignette" aria-hidden="true"></div>
+
+  <div id="rotate" class="overlay rotate" hidden>
+    <div class="rotate-card">
+      <div class="phone-rotate" aria-hidden="true">
+        <svg viewBox="0 0 96 96"><rect x="30" y="14" width="36" height="66" rx="8" class="stroke"/><path class="stroke" d="M16 34a34 34 0 0118-15M80 62a34 34 0 01-18 15"/><path d="M13 24l4 11-11 1z" fill="currentColor"/><path d="M83 72l-4-11 11-1z" fill="currentColor"/></svg>
+      </div>
+      <h2 data-i18n="rotate.title">ROTATE YOUR DEVICE</h2>
+      <p data-i18n="rotate.body">This duel is built for landscape. Turn your phone sideways and hold it with both hands.</p>
+      <button id="rotate-continue" class="btn-ghost" type="button" data-i18n="rotate.continue">PLAY IN PORTRAIT</button>
+    </div>
+  </div>
+
+  <div id="help" class="overlay" hidden>
+    <div class="panel-card help-card">
+      <div class="panel-kicker" data-i18n="help.kicker">QUICK GUIDE</div>
+      <h2 data-i18n="help.title">HOW TO PLAY</h2>
+      <div class="help-grid">
+        <div class="help-item"><span class="help-num">1</span><div><strong data-i18n="help.i1t">Aim and throw</strong><p data-i18n="help.i1b">Drag toward your rival and release. The longer the drag, the harder the throw.</p></div></div>
+        <div class="help-item"><span class="help-num">2</span><div><strong data-i18n="help.i2t">Mind the wind</strong><p data-i18n="help.i2b">Wind pushes the projectile in flight. Check the meter before you commit.</p></div></div>
+        <div class="help-item"><span class="help-num">3</span><div><strong data-i18n="help.i3t">One weapon each</strong><p data-i18n="help.i3b">Every fighter has a single weapon with its own weight, damage and range.</p></div></div>
+        <div class="help-item"><span class="help-num">4</span><div><strong data-i18n="help.i4t">Tap after the throw</strong><p data-i18n="help.i4b">Tap the screen while your shot is airborne to trigger its ability: detonate, return, split or boost.</p></div></div>
+      </div>
+      <div class="panel-actions">
+        <button id="help-close" class="btn-primary" type="button" data-i18n="help.close">GOT IT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pause" class="overlay" hidden>
+    <div class="panel-card pause-card">
+      <div class="panel-kicker" data-i18n="pause.kicker">TIME OUT</div>
+      <h2 data-i18n="pause.title">PAUSED</h2>
+      <p class="panel-sub" data-i18n="pause.sub">Take your time. The next throw can swing the match.</p>
+      <div class="pause-actions">
+        <button id="pause-resume" class="btn-primary" type="button" data-i18n="pause.resume">RESUME</button>
+        <button id="pause-restart" class="btn-ghost" type="button" data-i18n="pause.restart">RESTART MATCH</button>
+        <button id="pause-help" class="btn-ghost" type="button" data-i18n="pause.help">HOW TO PLAY</button>
+        <button id="pause-menu" class="btn-ghost danger" type="button" data-i18n="pause.menu">QUIT TO MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="overlay result" hidden>
+    <div class="result-card">
+      <div class="result-burst" aria-hidden="true"></div>
+      <div class="panel-kicker" id="result-kicker">STAGE 1</div>
+      <h2 id="result-title">YOU WIN</h2>
+      <p id="result-sub">Clean throw. The next opponent is already waiting.</p>
+      <div class="result-stats">
+        <div class="stat"><span data-i18n="result.best">BEST RUN</span><b id="result-best">0</b></div>
+        <div class="stat"><span data-i18n="result.damage">DAMAGE</span><b id="result-damage">0</b></div>
+        <div class="stat"><span data-i18n="result.shots">THROWS</span><b id="result-shots">0</b></div>
+      </div>
+      <div class="result-actions">
+        <button id="result-next" class="btn-primary" type="button">NEXT MATCH</button>
+        <button id="result-menu" class="btn-ghost" type="button" data-i18n="result.menu">MENU</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
