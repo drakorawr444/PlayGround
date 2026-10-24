@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2a9d8f">
+  <meta name="description" content="Axe Masters — duelo de arremesso estilo arcade. Mira, joga o machado e acerte a cabeça!">
+  <title>Axe Masters — Tomahawk Duel</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%23ffd23f%22/><text y=%2272%22 x=%2250%22 font-size=%2256%22 text-anchor=%22middle%22 font-family=%22Arial%22 fill=%22%231d3557%22>&#128296;</text></svg>">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Axe Masters"></canvas>
+
+    <div id="hud-root" class="hud-root">
+      <div id="hud" class="hud hidden">
+        <button id="btn-pause" class="round-btn pause-btn" aria-label="Pausar">
+          <span class="pause-ico"></span>
+        </button>
+      </div>
+
+      <div id="menu-ui" class="menu-ui">
+        <div class="menu-top">
+          <button id="btn-settings" class="round-btn gear-btn" aria-label="Configurações"><span class="gear-ico"></span></button>
+          <div class="menu-spacer"></div>
+          <div class="pill wallet">
+            <span class="pill-ico coin-ico"></span><strong id="menu-coins">0</strong>
+          </div>
+        </div>
+        <div class="menu-bottom">
+          <button id="btn-shop" class="big-btn shop-btn"><span class="shop-ico"></span>LOJA</button>
+          <div class="menu-spacer"></div>
+          <button id="btn-play" class="big-btn play-btn">
+            <span class="play-label">JOGAR <small id="play-level"></small></span>
+            <span class="hand-ico"></span>
+          </button>
+        </div>
+      </div>
+
+      <div id="modal-root" class="modal-root"></div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
